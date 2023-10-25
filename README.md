@@ -1,30 +1,19 @@
 # Iris3
 
-In Greek mythology, Iris (/ˈaɪrɪs/; Greek: Ἶρις) is the personification of the rainbow and messenger of the gods. She
-was the handmaiden to Hera.
+Iris3 automatically assigns labels to Google Cloud Platform resources for manageability and easier billing reporting.
 
-# Blog post
+# Runbook
 
 See
-the [post that presents Iris](https://blog.doit-intl.com/iris-3-automatic-labeling-for-cost-control-7451b480ee13?source=friends_link&sk=b934039e5dc35c9d5e377b6a15fb6381)
+the [runbook for Iris3](https://www.notion.so/aptoslabs/Iris3-GCP-Labeler-Deployment-50544effe3844dffadfc07219bfe9a7b)
 .
 
 ## What it does for you
-
-Iris automatically assigns labels to Google Cloud Platform resources for manageability and easier billing reporting.
 
 Each supported resource in the GCP Organization will get automatically-generated labels with keys like `iris_zone` (the
 prefix is configurable), and the copied value. 
 For example, a Google Compute Engine instance would get labels like
 `[iris_name:nginx]`, `[iris_region:us-central1]` and `[iris_zone:us-central1-a]`.
-
-Limitation: Iris cannot *add* information, only *copy* information. For example, it can label a VM instance with its
-zone, since this information is known; but it cannot add a "business unit" label because it does not know what business
-unit a resource should be attributed to. For that, you should label all resources when creating them, e.g. in your
-Terraform scripts.
-
-Iris is open-source: Feel free to add functionality and add new types of labels. See the `TODO.md` file for features and
-fixes you might do.
 
 ## When it does it
 
@@ -45,17 +34,11 @@ Iris adds labels:
 
 ### Deployment
 
-* Get the code with `git clone https://github.com/doitintl/iris3.git`
-* Have Python 3.9+ as your default `python3`.
+* Get the code with `git clone https://github.com/aptos-labs/iris3`
+* Have Python 3.11+ as your default `python3`.
 * Install tools `envsubst` and `jq`.
 * Install and initialize `gcloud` using an account with the [above-mentioned](#before-deploying) roles.
 * Config
-  * Copy `config.yaml.original` to `config.yaml`.
   * Optionally configure by editing the configuration files ([See more documentation below](#configuration).)
 * Run `./deploy.sh <PROJECT_ID> `.
     * The above is the default. There are also command-line options, to be put  at the end of the command line after the project id. Run `deploy.sh -h` for documentation.
-* When you redeploy different versions of Iris code on top of old ones:
-    * If new plugins were added or some removed, the log sink *will* be updated to reflect this.
-    * If the parameters for subscriptions or topics were changed in a new version of the Iris code, the subscriptions or  topics will *not* be updated. You would have to delete them first.
-* If you are changing to or from  Cloud-Scheduler-only with or without `-c`, be sure to run both org and project deployments.         
-*  See `deploy.sh` for configuring Iris to add labels only with  Cloud Scheduler and not on-creation, or without the Scheduler at all, or with both Scheduler and on-creation. The latter is the default.

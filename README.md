@@ -1,19 +1,13 @@
 # Iris3
 
 Iris3 automatically assigns labels to Google Cloud Platform resources for manageability and easier billing reporting.
+Each supported resource in the GCP Organization will get automatically-generated labels with keys like iris_zone (the prefix is configurable), and the copied value. For example, a Google Compute Engine instance would get labels like [iris_name:nginx], [iris_region:us-central1] and [iris_zone:us-central1-a].
 
 # Runbook
 
 See
 the [runbook for Iris3](https://www.notion.so/aptoslabs/Iris3-GCP-Labeler-Deployment-50544effe3844dffadfc07219bfe9a7b)
 .
-
-## What it does for you
-
-Each supported resource in the GCP Organization will get automatically-generated labels with keys like `iris_zone` (the
-prefix is configurable), and the copied value. 
-For example, a Google Compute Engine instance would get labels like
-`[iris_name:nginx]`, `[iris_region:us-central1]` and `[iris_zone:us-central1-a]`.
 
 ## When it does it
 

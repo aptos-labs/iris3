@@ -41,3 +41,21 @@ Iris adds labels:
 * When you first use Iris, you may want to label all existing resources.
 * To do this, deploy it with `label_all_on_cron: True` and wait for the next scheduled run, or manually trigger a run.
 * You may want to then redeploy Iris with `label_all_on_cron: False` to avoid the daily resource consumption.
+
+
+### Deployment
+
+* Get the code with `git clone https://github.com/doitintl/iris3.git`
+* Have Python 3.9+ as your default `python3`.
+* Install tools `envsubst` and `jq`.
+* Install and initialize `gcloud` using an account with the [above-mentioned](#before-deploying) roles.
+* Config
+  * Copy `config.yaml.original` to `config.yaml`.
+  * Optionally configure by editing the configuration files ([See more documentation below](#configuration).)
+* Run `./deploy.sh <PROJECT_ID> `.
+    * The above is the default. There are also command-line options, to be put  at the end of the command line after the project id. Run `deploy.sh -h` for documentation.
+* When you redeploy different versions of Iris code on top of old ones:
+    * If new plugins were added or some removed, the log sink *will* be updated to reflect this.
+    * If the parameters for subscriptions or topics were changed in a new version of the Iris code, the subscriptions or  topics will *not* be updated. You would have to delete them first.
+* If you are changing to or from  Cloud-Scheduler-only with or without `-c`, be sure to run both org and project deployments.         
+*  See `deploy.sh` for configuring Iris to add labels only with  Cloud Scheduler and not on-creation, or without the Scheduler at all, or with both Scheduler and on-creation. The latter is the default.

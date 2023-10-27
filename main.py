@@ -251,7 +251,7 @@ def __label_one_0(data, plugin_cls: Type[Plugin]):
     plugin = PluginHolder.get_plugin_instance(plugin_cls)
     gcp_object = plugin.get_gcp_object(data)
     if gcp_object is not None:
-        project_id = data["labels"]["project_id"]
+        project_id = data.get("resource", {}).get("labels", {}).get("project_id")
         if is_project_enabled(project_id):
             logging.info(
                 "Will label_one() in %s, existing object %s ",

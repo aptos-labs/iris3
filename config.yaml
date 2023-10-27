@@ -49,7 +49,7 @@ from_project: True
 # If it isTrue, then all resource types will be labeled on every Cloud Scheduler cycle.
 #   This is useful for labeling existing resources when you first launch Iris3.
 
-label_all_on_cron: False
+label_all_on_cron: True
 
 # Optionally change this token before first deployment for added security in
 # communication between PubSub and the Iris App on App Engine.
@@ -57,7 +57,7 @@ label_all_on_cron: False
 # Note that this token-based approach is not very secure, though it  was once recommended by Google.
 # However, so long as the GCP project running the Iris3 AppEngine service is otherwise secure,
 # this token protects against unwanted invocations of labeling.
-pubsub_verification_token: 0b0a30cde7e3489f0a9cd74bb51c514d
+pubsub_verification_token: 0b1a30cde7e3489f0a9cd74bb51c512n
 
 # If running in a project with one of the strings in the name,
 # then scheduled labelings will fail if more than 3 projects are enabled.

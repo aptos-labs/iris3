@@ -62,27 +62,36 @@ def is_appscript_project(p) -> bool:
     return bool(re.match(r"sys-\d{26}", p))
 
 
-# Not cached. Returns a generator, and so not reusable
 def all_projects() -> Generator[str, Any, None]:
-    """All projects to which the current user has access"""
-    # Local import to avoid burdening AppEngine memory.
-    # Loading all Cloud Client libraries would be 100MB  means that
-    # the default AppEngine Instance crashes on out-of-memory even before actually serving a request.
     from google.cloud import resourcemanager_v3
 
     add_loaded_lib("resourcemanager_v3")
     projects_client = resourcemanager_v3.ProjectsClient()
+    folders_client = resourcemanager_v3.FoldersClient()
 
     current_proj_id = current_project_id()
-    current_project = projects_client.get_project(
-        None, name=f"projects/{current_proj_id}"
-    )
-    parent_name = current_project.name
-    org_name = get_org(parent_name)
+    current_project = projects_client.get_project(None, name=f"projects/{current_proj_id}")
+    org_name = get_org(current_project.name)
 
+    # List all projects in the organization
     project_objects = projects_client.list_projects(parent=org_name)
-    projects = (p.project_id for p in project_objects)
-    return projects
+    for project in project_objects:
+        yield project.project_id
+
+    # List all folders in the organization and their projects recursively
+    yield from list_projects_in_folders(org_name, projects_client, folders_client)
+
+def list_projects_in_folders(parent_name, projects_client, folders_client) -> Generator[str, Any, None]:
+    # List projects in the current parent (folder or organization)
+    project_objects = projects_client.list_projects(parent=parent_name)
+    for project in project_objects:
+        yield project.project_id
+
+    # List subfolders in the current parent
+    folder_objects = folders_client.list_folders(parent=parent_name)
+    for folder in folder_objects:
+        # Recursively list projects in each subfolder
+        yield from list_projects_in_folders(folder.name, projects_client, folders_client)
 
 
 def method_name(projects):
